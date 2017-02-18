@@ -10,4 +10,7 @@ public interface Neuron {
 	
 	public Neuron[] getOutputs();
 	
+	public int[] getBinary();
+	
+	public int getID();
 }

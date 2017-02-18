@@ -3,8 +3,10 @@ package com.sacredheartkingston.jtowner.facerecog;
 public class OutputNeuron implements Neuron {
 	
 	double totalInput = 0;
+	int id;
 	
-	public OutputNeuron() {
+	public OutputNeuron(int id) {
+		this.id = id;
 	}
 	
 	@Override
@@ -26,6 +28,21 @@ public class OutputNeuron implements Neuron {
 	@Override
 	public Neuron[] getOutputs() {
 		return null;
+	}
+
+	@Override
+	public int[] getBinary() {
+		int[] typeBinary = {1,0};
+		int[] idBinary = Utils.getByte(this.id);
+		int[] outputBinary = new int[32];
+		int[] weightsBinary = new int[132];
+		int[] binary = Utils.concatAll(typeBinary, idBinary, outputBinary, weightsBinary);
+		return binary;
+	}
+
+	@Override
+	public int getID() {
+		return id;
 	}
 
 }
