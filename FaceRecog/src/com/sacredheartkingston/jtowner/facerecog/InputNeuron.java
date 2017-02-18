@@ -1,20 +1,20 @@
 package com.sacredheartkingston.jtowner.facerecog;
 
-public class BasicNeuron implements Neuron {
+public class InputNeuron implements Neuron {
 	
 	double totalInput = 0;
 	Neuron[] outputs;
 	double[] weights;
 	
-	public BasicNeuron() {
+	public InputNeuron() {
 		
 	}
 	
-	public BasicNeuron(Neuron[] outputs, double[] weights) {
+	public InputNeuron(Neuron[] outputs, double[] weights, double input) {
 		this.outputs = outputs;
 		this.weights = weights;
+		this.totalInput = input;
 	}
-	
 	
 	@Override
 	public double run() {
@@ -27,7 +27,7 @@ public class BasicNeuron implements Neuron {
 	
 	@Override
 	public void input(double input, double weight) {
-		totalInput += input*weight;
+		totalInput = input;
 	}
 
 	@Override
@@ -35,10 +35,14 @@ public class BasicNeuron implements Neuron {
 		this.outputs = outputs;
 		this.weights = weights;
 	}
+	
+	public void setInput(double input) {
+		this.totalInput = input;
+	}
 
 	@Override
 	public Neuron[] getOutputs() {
 		return outputs;
 	}
-	
+
 }

@@ -6,4 +6,11 @@ public class Utils {
 		return 1/(1+Math.pow(Math.E, -1*i));
 	}
 	
+	public static double random(double min, double max) {
+		double random = Math.random();
+		random *= (max - min);
+		random += min;
+		return random;
+	}
+	
 }
