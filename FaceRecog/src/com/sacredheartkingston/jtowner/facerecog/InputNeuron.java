@@ -51,12 +51,12 @@ public class InputNeuron implements Neuron {
 	@Override
 	public int[] getBinary() {
 		int[] typeBinary = {0,1};
-		int[] idBinary = Utils.getByte(this.id);
-		int[] outputBinary = new int[32];
+		int[] idBinary = Utils.getTwoBytes(this.id);
+		int[] outputBinary = new int[64];
 		for(int i = 0; i < outputs.length; i++) {
-			int[] outNBinary = Utils.getByte(outputs[i].getID());
-			for(int j = 0; j < 8; j++) {
-				outputBinary[8*i + j] = outNBinary[j];
+			int[] outNBinary = Utils.getTwoBytes(outputs[i].getID());
+			for(int j = 0; j < 16; j++) {
+				outputBinary[16*i + j] = outNBinary[j];
 			}
 		}
 		int[] weightsBinary = new int[132];

@@ -33,8 +33,8 @@ public class OutputNeuron implements Neuron {
 	@Override
 	public int[] getBinary() {
 		int[] typeBinary = {1,0};
-		int[] idBinary = Utils.getByte(this.id);
-		int[] outputBinary = new int[32];
+		int[] idBinary = Utils.getTwoBytes(this.id);
+		int[] outputBinary = new int[64];
 		int[] weightsBinary = new int[132];
 		int[] binary = Utils.concatAll(typeBinary, idBinary, outputBinary, weightsBinary);
 		return binary;

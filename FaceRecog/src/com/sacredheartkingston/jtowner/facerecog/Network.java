@@ -47,7 +47,7 @@ public class Network {
 		}
 	}
 	
-	public void run() {
+	public double[] run() {
 		Set<Neuron> currentNeurons = new HashSet<Neuron>();
 		currentNeurons.addAll(Arrays.asList(Arrays.copyOfRange(neurons, 0, input)));
 		List<Neuron> nextNeurons = new ArrayList<Neuron>();
@@ -61,41 +61,23 @@ public class Network {
 					nextNeurons.remove(j);
 				}
 			}
-			System.out.println(currentNeurons.size());
+			//System.out.println(currentNeurons.size());
 			currentNeurons = new HashSet<Neuron>();
 			currentNeurons.addAll(nextNeurons);
 			nextNeurons = new ArrayList<Neuron>();
 		}
+		double[] outputs = new double[output];
 		for(int i = (input + basic); i < total; i++) {
-			System.out.println(neurons[i].run());
+			outputs[i - (input + basic)] = neurons[i].run();
 		}
+		return outputs;
 	}
 	
-	public void run(int[] inputs) {
+	public double[] run(double[] inputs) {
 		for(int i = 0; i < this.input; i++) {
 			neurons[i].input(inputs[i], 1);
 		}
-		Set<Neuron> currentNeurons = new HashSet<Neuron>();
-		currentNeurons.addAll(Arrays.asList(Arrays.copyOfRange(neurons, 0, input)));
-		List<Neuron> nextNeurons = new ArrayList<Neuron>();
-		for(int i = 0; i < 7; i++) {
-			for(Neuron n : currentNeurons) {
-				n.run();
-				nextNeurons.addAll(Arrays.asList(n.getOutputs()));
-			}
-			for(int j = nextNeurons.size() - 1; j > -1; j--) {
-				if(nextNeurons.get(j) instanceof OutputNeuron) {
-					nextNeurons.remove(j);
-				}
-			}
-			System.out.println(currentNeurons.size());
-			currentNeurons = new HashSet<Neuron>();
-			currentNeurons.addAll(nextNeurons);
-			nextNeurons = new ArrayList<Neuron>();
-		}
-		for(int i = (input + basic); i < total; i++) {
-			System.out.println(neurons[i].run());
-		}
+		return run();
 	}
 	
 	public int[] toBinary() {
@@ -132,32 +114,36 @@ public class Network {
 		int[] outputIDs = new int[4];
 		int countOutput = 0;
 		for(int i = 0; i < 4; i++) {
-			outputIDs[i] = Utils.binaryToInt(Arrays.copyOfRange(binary, 10 + i*8, 18 + i*8));
-			if(outputIDs[i] > input - 1) {
+			outputIDs[i] = Utils.binaryToInt(Arrays.copyOfRange(binary, 18 + i*16, 18 + (i+1)*16));
+			if(outputIDs[i]%total > input - 1) {
 				countOutput++;
 			}
 		}
 		double[] allWeights = new double[4];
 		for(int i = 0; i < 4; i++) {
-			allWeights[i] = Utils.binaryToLong(Arrays.copyOfRange(binary, 42 + i*33, 42 + (i+1)*33 - 1)) * Math.pow(10, -8);
-			if(binary[42+((i+1)*33) - 1] == 1) {
+			allWeights[i] = Utils.binaryToLong(Arrays.copyOfRange(binary, 82 + i*33, 82 + (i+1)*33 - 1)) * Math.pow(10, -8);
+			if(binary[82+((i+1)*33) - 1] == 1) {
 				allWeights[i] *= -1;
 			}
 		}
 		Neuron[] outputs = new Neuron[countOutput];
 		double[] weights = new double[countOutput];
 		int actCount = 0;
-		for(int i = 0; i < countOutput; i++) {
-			while(outputIDs[i] < input - 1) {
-				i++;
+		for(int i = 0; i < 4; i++) {
+			if(outputIDs[i]%total > input - 1) {
+				outputs[actCount] = neurons[outputIDs[i]%total];
+				if(allWeights[i] == 0) {
+					weights[actCount] = Utils.random(-1, 1);
+				} else {
+					weights[actCount] = allWeights[i];
+				}
+				actCount++;
 			}
-			outputs[actCount] = neurons[outputIDs[i]];
-			if(allWeights[i] == 0) {
-				weights[actCount] = Utils.random(-1, 1);
-			} else {
-				weights[actCount] = allWeights[i];
+		}
+		for(int i = 0; i < outputs.length; i++) {
+			if(outputs[i] == null) {
+				System.out.println("Oh no!");
 			}
-			actCount++;
 		}
 		neurons[id].setOutputs(outputs, weights);
 	}
